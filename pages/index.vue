@@ -4,7 +4,7 @@
     <el-carousel height="500px">
       <el-carousel-item v-for="(item,index) in postList" :key="index">
         <p class="img" 
-        :style="`background:url(${item.url}) center center no-repeat
+        :style="`background:url(${$axios.defaults.baseURL}${item.url}) center center no-repeat
         background-size:contain contain`"></p>
       </el-carousel-item>
     </el-carousel>
@@ -16,20 +16,29 @@ export default {
   data () {
     return {
       postList:[
-        {
-          url:'http://157.122.54.189:9095/assets/images/th01.jfif'
-        },
-        {
-          url:'http://157.122.54.189:9095/assets/images/th02.jfif'
-        },
-        {
-          url:'http://157.122.54.189:9095/assets/images/th03.jfif'
-        },
-        {
-          url:'http://157.122.54.189:9095/assets/images/th04.jfif'
-        }
+        // {
+        //   url:'http://157.122.54.189:9095/assets/images/th01.jfif'
+        // },
+        // {
+        //   url:'http://157.122.54.189:9095/assets/images/th02.jfif'
+        // },
+        // {
+        //   url:'http://157.122.54.189:9095/assets/images/th03.jfif'
+        // },
+        // {
+        //   url:'http://157.122.54.189:9095/assets/images/th04.jfif'
+        // }
       ]
     }
+  },
+  mounted () {
+    this.$axios({
+      url:'/scenics/banners'
+    }).then((res)=>{
+      // console.log(res);
+      const {data} = res.data
+      this.postList = data
+    })
   }
 };
 </script>
