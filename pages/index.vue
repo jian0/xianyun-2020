@@ -79,7 +79,7 @@ export default {
   },
   methods: {
     handleclick(index) {
-      console.log("点击了");
+      // console.log("点击了");
       this.currentnum = index;
 
       // 点击机票的话，跳转到机票页面

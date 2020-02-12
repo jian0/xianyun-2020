@@ -34,9 +34,15 @@
           v-model="form.destCity"
         ></el-autocomplete>
       </el-form-item>
-      <el-form-item label="出发时间" >
+      <el-form-item label="出发时间">
         <!-- change 用户确认选择日期时触发 -->
-        <el-date-picker type="date" placeholder="请选择日期" style="width: 100%;" @change="handleDate" v-model="form.departDate"></el-date-picker>
+        <el-date-picker
+          type="date"
+          placeholder="请选择日期"
+          style="width: 100%;"
+          @change="handleDate"
+          v-model="form.departDate"
+        ></el-date-picker>
       </el-form-item>
       <el-form-item label>
         <el-button style="width:100%;" type="primary" icon="el-icon-search" @click="handleSubmit">搜索</el-button>
@@ -49,6 +55,7 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   data() {
     return {
@@ -73,25 +80,25 @@ export default {
     // 出发城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
     async queryDepartSearch(value, cb) {
-        const arr =  await this.querySearchAsync(value)
-            if(arr.length > 0){
-                // 不在下拉列表中选择，则默认选择第一项
-                this.form.departCity = arr[0].value;
-                this.form.departCode = arr[0].sort;
-            }
-        cb(arr)    
+      const arr = await this.querySearchAsync(value);
+      if (arr.length > 0) {
+        // 不在下拉列表中选择，则默认选择第一项
+        this.form.departCity = arr[0].value;
+        this.form.departCode = arr[0].sort;
+      }
+      cb(arr);
     },
 
     // 目标城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
     async queryDestSearch(value, cb) {
-        const arr =  await this.querySearchAsync(value)
-            if(arr.length > 0){
-                // 不在下拉列表中选择，则默认选择第一项
-                this.form.destCity = arr[0].value;
-                this.form.destCode = arr[0].sort;
-            }
-        cb(arr)    
+      const arr = await this.querySearchAsync(value);
+      if (arr.length > 0) {
+        // 不在下拉列表中选择，则默认选择第一项
+        this.form.destCity = arr[0].value;
+        this.form.destCode = arr[0].sort;
+      }
+      cb(arr);
     },
 
     querySearchAsync(queryString) {
@@ -128,13 +135,17 @@ export default {
     handleDestSelect(item) {},
 
     // 确认选择日期时触发
-    handleDate(value) {},
+    handleDate(value) {
+      this.form.departDate = moment(value).format("YYYY-MM-DD");
+    },
 
     // 触发和目标城市切换时触发
     handleReverse() {},
 
     // 提交表单是触发
-    handleSubmit() {}
+    handleSubmit() {
+      console.log(this.form);
+    }
   },
   mounted() {}
 };
