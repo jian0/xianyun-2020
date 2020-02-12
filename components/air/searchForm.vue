@@ -14,7 +14,7 @@
     </el-row>
 
     <el-form class="search-form-content" ref="form" label-width="80px">
-      <el-form-item label="出发城市">
+      <el-form-item label="出发城市" prop="depart">
         <!-- fetch-suggestions 返回输入建议的方法 -->
         <!-- select 点击选中建议项时触发 -->
         <el-autocomplete
@@ -25,7 +25,7 @@
           v-model="form.departCity"
         ></el-autocomplete>
       </el-form-item>
-      <el-form-item label="到达城市">
+      <el-form-item label="到达城市" prop="dest">
         <el-autocomplete
           :fetch-suggestions="queryDestSearch"
           placeholder="请搜索到达城市"
@@ -34,7 +34,7 @@
           v-model="form.destCity"
         ></el-autocomplete>
       </el-form-item>
-      <el-form-item label="出发时间">
+      <el-form-item label="出发时间" prop="departDate">
         <!-- change 用户确认选择日期时触发 -->
         <el-date-picker
           type="date"
@@ -153,7 +153,48 @@ export default {
 
     // 提交表单是触发
     handleSubmit() {
-      console.log(this.form);
+      //   console.log(this.form);
+      // 添加表单规则
+      const rules = {
+        depart: {
+          value: this.form.departCity,
+          message: "请选择出发城市"
+        },
+        dest: {
+          value: this.form.destCity,
+          message: "请选择到达城市"
+        },
+        departDate: {
+          value: this.form.departDate,
+          message: "请选择出发时间"
+        }
+      };
+      let valid = true;
+
+      Object.keys(rules).forEach(v => {
+        // 只要有一个结果不通过，就停止循环
+        if (!valid) return;
+        const item = rules[v];
+
+        // 数据字段为空
+        if (!item.value) {
+          valid = false;
+
+          this.$confirm(item.message, "提示", {
+            confirmButtonText: "确定",
+            showCancelButton: false,
+            type: "warning"
+          });
+        }
+      });
+
+      // 不通过验证，不需要往下执行
+      if (!valid) return;
+
+      this.$router.push({
+        path: "/air/flights",
+        query: this.form
+      });
     }
   },
   mounted() {}
