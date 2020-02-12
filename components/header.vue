@@ -18,12 +18,35 @@
         <el-dropdown-item>消息</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
-    <nuxt-link to="/user/login" class="login">登录/注册</nuxt-link>
+    <el-dropdown v-if="$store.state.user.userInfo.token">
+      <el-row type="flex" align="middle" class="el-dropdown-link">
+        <nuxt-link to="#">
+          <img :src="$axios.defaults.baseURL + $store.state.user.userInfo.user.defaultAvatar" />
+          {{$store.state.user.userInfo.user.nickname}}
+        </nuxt-link>
+        <i class="el-icon-caret-bottom el-icon--right"></i>
+      </el-row>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item>
+          <nuxt-link to="#">个人中心</nuxt-link>
+        </el-dropdown-item>
+        <el-dropdown-item>
+          <div @click="handleExit">退出</div>
+        </el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+    <nuxt-link to="/user/login" class="login" v-else>登录/注册</nuxt-link>
   </el-row>
 </template>
 
 <script>
-export default {};
+export default {
+  methods:{
+    handleExit(){
+      
+    }
+  }
+};
 </script>
 
 <style lang='less' scoped>
