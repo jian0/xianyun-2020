@@ -41,9 +41,11 @@
 
 <script>
 export default {
-  methods:{
-    handleExit(){
-      
+  methods: {
+    handleExit() {
+      const { commit } = this.$store;
+      commit("user/cleanUserInfo");
+      this.$message.success('退出成功')
     }
   }
 };

@@ -8,6 +8,12 @@ export const state = () => ({
 export const mutations = {
     setUserInfo(state, data) {
         state.userInfo = data
+    },
+    cleanUserInfo(state, info){
+        if(process.browser){
+            localStorage.removeItem("userInfo");
+        }
+        state.userInfo = {};
     }
 }
 
