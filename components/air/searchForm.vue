@@ -129,10 +129,19 @@ export default {
     },
 
     // 出发城市下拉选择时触发
-    handleDepartSelect(item) {},
+    // item是当前选中的值
+    //例如：输入"广"字,自动补全为第一个选项“广州”
+    handleDepartSelect(item) {
+      this.form.departCity = item.value;
+      this.form.departCode = item.sort;
+    },
 
     // 目标城市下拉选择时触发
-    handleDestSelect(item) {},
+    // item是当前选中的值
+    handleDestSelect(item) {
+      this.form.destCity = item.value;
+      this.form.destCode = item.sort;
+    },
 
     // 确认选择日期时触发
     handleDate(value) {
