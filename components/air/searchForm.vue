@@ -76,12 +76,13 @@ export default {
   methods: {
     // tab切换时触发
     handleSearchTab(item, index) {
-        // 先获取所有需要的值
-      const { departCity, departCode, destCity, destCode } = this.form;
-      this.form.departCity = destCity;
-      this.form.departCode = destCode;
-      this.form.destCity = departCity;
-      this.form.destCode = departCode;
+      if (index === 1) {
+        this.$confirm("目前暂不支持往返，请使用单程选票！", "提示", {
+          confirmButtonText: "确定",
+          showCancelButton: false,
+          type: "warning"
+        });
+      }
     },
 
     // 出发城市输入框获得焦点时触发
@@ -155,8 +156,15 @@ export default {
       this.form.departDate = moment(value).format("YYYY-MM-DD");
     },
 
-    // 触发和目标城市切换时触发
-    handleReverse() {},
+    // 出发和目标城市切换时触发
+    handleReverse() {
+      // 先获取所有需要的值
+      const { departCity, departCode, destCity, destCode } = this.form;
+      this.form.departCity = destCity;
+      this.form.departCode = destCode;
+      this.form.destCity = departCity;
+      this.form.destCode = departCode;
+    },
 
     // 提交表单是触发
     handleSubmit() {
