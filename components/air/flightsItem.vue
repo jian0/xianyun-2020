@@ -63,7 +63,7 @@ export default {
     // 数据
     data: {
       type: Object,
-      // 默认是空数组
+      // 默认是空对象
       default: {}
     }
   },

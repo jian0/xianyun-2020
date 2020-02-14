@@ -4,7 +4,7 @@
       <!-- 顶部过滤列表 -->
       <div class="flights-content">
         <!-- 过滤条件 -->
-        <div></div>
+        <flightsFilters :data="flightsData"></flightsFilters>
 
         <!-- 航班头部布局 -->
         <div>
@@ -39,19 +39,26 @@
 import moment from "moment";
 import flightsListHead from "@/components/air/flightsListHead";
 import flightsItem from "@/components/air/flightsItem";
+import flightsFilters from "@/components/air/flightsFilters";
 
 export default {
   data() {
     return {
-      flightsData: {}, // 航班总数据
+      flightsData: {
+        info: {},
+        options: {
+          airport: []
+        }
+      }, // 航班总数据
       dataList: [], // 航班列表数据，用于循环flightsItem组件，单独出来是因为要分页
       currentPage: 1, //当前页码
-      pageSize: 5, // 每页显示的条数
+      pageSize: 5 // 每页显示的条数
     };
   },
   components: {
     flightsListHead,
-    flightsItem
+    flightsItem,
+    flightsFilters
   },
   mounted() {
     this.getData();
@@ -66,7 +73,7 @@ export default {
         console.log(res);
         this.flightsData = res.data;
         // this.dataList = this.flightsData.flights;
-        this.setDataList()
+        this.setDataList();
       });
     },
     // 设置dataList数据
@@ -78,14 +85,14 @@ export default {
     // 分页
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`);
-      this.pageSize = val
-      this.currentPage = 1
-      this.setDataList()
+      this.pageSize = val;
+      this.currentPage = 1;
+      this.setDataList();
     },
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`);
-      this.currentPage = val
-      this.setDataList()
+      this.currentPage = val;
+      this.setDataList();
     }
   }
 };
