@@ -4,7 +4,7 @@
       <!-- 顶部过滤列表 -->
       <div class="flights-content">
         <!-- 过滤条件 -->
-        <flightsFilters :data="flightsData"></flightsFilters>
+        <flightsFilters :data="cacheFlightsData" @getData="setDataList"></flightsFilters>
 
         <!-- 航班头部布局 -->
         <div>
@@ -46,10 +46,20 @@ export default {
     return {
       flightsData: {
         info: {},
+        flights: [],
         options: {
           airport: []
         }
       }, // 航班总数据
+      // 备份数据
+      cacheFlightsData: {
+        info: {},
+        flights: [],
+        options: {
+          airport: []
+        }
+      },
+
       dataList: [], // 航班列表数据，用于循环flightsItem组件，单独出来是因为要分页
       currentPage: 1, //当前页码
       pageSize: 5 // 每页显示的条数
@@ -72,12 +82,20 @@ export default {
       }).then(res => {
         console.log(res);
         this.flightsData = res.data;
+        this.cacheFlightsData = {...res.data}
+        console.log(this.cacheFlightsData);
+        
         // this.dataList = this.flightsData.flights;
         this.setDataList();
       });
     },
     // 设置dataList数据
-    setDataList() {
+    setDataList(arr) {
+      if (arr) {
+        this.currentPage = 1;
+        this.flightsData.flights = arr;
+        this.flightsData.total = arr.length;
+      }
       const start = (this.currentPage - 1) * this.pageSize;
       const end = start + this.pageSize;
       this.dataList = this.flightsData.flights.slice(start, end);

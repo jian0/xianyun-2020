@@ -84,7 +84,14 @@ export default {
     handleFlightTimes(value) {},
 
     // 选择航空公司时候触发
-    handleCompany(value) {},
+    handleCompany(value) {
+      console.log(this.data);
+      const arr = this.data.flights.filter(v => {
+          return v.airline_name === value
+      });
+      console.log(arr);
+      this.$emit('getData',arr)
+    },
 
     // 选择机型时候触发
     handleAirSize(value) {},
