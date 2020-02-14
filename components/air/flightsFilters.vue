@@ -87,7 +87,18 @@ export default {
     },
 
     // 选择出发时间时候触发
-    handleFlightTimes(value) {},
+    handleFlightTimes(value) {
+      // console.log(value);
+      const [from, to] = value.split(","); //['0','6']
+      // console.log([start,end]);
+      const arr = this.data.flights.filter(v => {
+        //   +v.dep_time.split(":")[0]  前面加个‘+’让其变为number类型
+        const start = +v.dep_time.split(":")[0];
+        // console.log(start);
+        return start >= from && start < to;
+      });
+      this.$emit("getData", arr);
+    },
 
     // 选择航空公司时候触发
     handleCompany(value) {
