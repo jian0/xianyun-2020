@@ -82,8 +82,9 @@ export default {
       }).then(res => {
         console.log(res);
         this.flightsData = res.data;
+        // 展开数据，只拷贝里面的4个对象，和flightsData没有关联了
         this.cacheFlightsData = {...res.data}
-        console.log(this.cacheFlightsData);
+        // console.log(this.cacheFlightsData);
         
         // this.dataList = this.flightsData.flights;
         this.setDataList();
