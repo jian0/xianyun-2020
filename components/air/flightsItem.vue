@@ -28,7 +28,7 @@
         </el-col>
       </el-row>
     </div>
-    <div class="flight-recommend" v-if="showRecommend" >
+    <div class="flight-recommend" v-if="showRecommend">
       <!-- 隐藏的座位信息列表 -->
       <el-row type="flex" justify="space-between" align="middle">
         <el-col :span="4">低价推荐</el-col>
@@ -47,7 +47,7 @@
             </el-col>
             <el-col :span="5" class="price">￥{{item.org_settle_price}}</el-col>
             <el-col :span="3" class="choose-button">
-              <el-button type="warning" size="mini">选定</el-button>
+              <el-button type="warning" size="mini" @click="handleClick(item)">选定</el-button>
               <p>剩余：{{item.discount}}</p>
             </el-col>
           </el-row>
@@ -88,6 +88,17 @@ export default {
       // let hour = (changearr - changedep) / 60;
       // let minute = (changearr - changedep) % 60;
       return `${Math.floor(result / 60)}时${result % 60}分`;
+    }
+  },
+  methods: {
+    handleClick(item) {
+      this.$router.push({
+        path:'/air/order',
+        query:{
+          id:this.data.id,
+          seat_xid:item.seat_xid
+        }
+      })
     }
   }
 };
