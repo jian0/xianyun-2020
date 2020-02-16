@@ -2,7 +2,7 @@
   <div class="container">
     <el-row type="flex" justify="space-between">
       <!-- 订单表单 -->
-      <OrderForm></OrderForm>
+      <OrderForm :data='infoData'></OrderForm>
 
       <!-- 侧边栏 -->
       <div class="aside"></div>
@@ -13,8 +13,25 @@
 <script>
 import OrderForm from "@/components/air/orderForm";
 export default {
+  data() {
+    return {
+      infoData: {
+        insurances: []
+      }
+    };
+  },
   components: {
     OrderForm
+  },
+  mounted() {
+      const {query} = this.$route
+    this.$axios({
+      url: `/airs/${query.id}`,
+      params: query.seat_xid
+    }).then(res => {
+        console.log(res);
+        this.infoData = res.data    
+    });
   }
 };
 </script>
