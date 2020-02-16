@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div class="air-column">
-      <h2>剩机人</h2>
+      <h2>乘机人</h2>
       <el-form class="member-info">
         <div class="member-info-item" v-for="(item,index) in form.users" :key="index">
           <el-form-item label="乘机人类型">
@@ -32,7 +32,7 @@
       <div>
         <div class="insurance-item" v-for="(item,index) in data.insurances" :key="index">
           <el-checkbox
-            :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`"
+            :label="`${item.type}：￥${item.price}/份×${form.users.length}  最高赔付${item.compensation}`"
             @change="handleInsurance(item.id)"
             border
           ></el-checkbox>
@@ -92,6 +92,23 @@ export default {
         air: this.$route.query.id
       }
     };
+  },
+  mounted() {
+    const { id, seat_xid } = this.$route.query;
+    this.$axios({
+      url: "/airs/" + id,
+      params: {
+        seat_xid
+      }
+    }).then(res => {
+      // 赋值给机票的详细信息
+      this.infoData = res.data;
+
+      // 把infoData保存到store
+      this.$store.commit("air/setOrderDetail", this.infoData);
+      console.log(this.infoData);
+      
+    });
   },
   methods: {
     // 添加乘机人
