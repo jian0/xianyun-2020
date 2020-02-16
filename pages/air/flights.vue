@@ -70,10 +70,29 @@ export default {
     flightsFilters,
     flightsAside
   },
+  // watch: {
+  //   $route() {
+  //     this.currentPage = 1
+  //     this.getData();
+  //   },
+  //   currentPage(){
+  //     console.log(this.currentPage);
+
+  //   }
+  // },
+  beforeRouteUpdate(to, from, next) {
+    this.currentPage = 1;
+    next();
+    this.getData();
+  },
   mounted() {
     this.getData();
   },
   methods: {
+    // beforeRouteUpdate(to, from, next) {
+    //   this.getData();
+    //   next();
+    // },
     // 获取航班总数据
     getData() {
       this.$axios({
@@ -83,9 +102,9 @@ export default {
         console.log(res);
         this.flightsData = res.data;
         // 展开数据，只拷贝里面的4个对象，和flightsData没有关联了
-        this.cacheFlightsData = {...res.data}
+        this.cacheFlightsData = { ...res.data };
         // console.log(this.cacheFlightsData);
-        
+
         // this.dataList = this.flightsData.flights;
         this.setDataList();
       });

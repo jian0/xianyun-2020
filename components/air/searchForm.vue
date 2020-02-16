@@ -213,6 +213,9 @@ export default {
       // 不通过验证，不需要往下执行
       if (!valid) return;
 
+      // 搜索跳转之前，把表单数据存储到store中的air.js里面
+      this.$store.commit('air/setHistory',this.form)
+
       this.$router.push({
         path: "/air/flights",
         query: this.form
