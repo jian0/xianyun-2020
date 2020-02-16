@@ -3,7 +3,7 @@
     <div class="air-column">
       <h2>剩机人</h2>
       <el-form class="member-info">
-        <div class="member-info-item" v-for="(item,index) in users" :key="index">
+        <div class="member-info-item" v-for="(item,index) in form.users" :key="index">
           <el-form-item label="乘机人类型">
             <el-input placeholder="姓名" class="input-with-select" v-model="item.username">
               <el-select slot="prepend" value="1" placeholder="请选择">
@@ -45,11 +45,11 @@
       <div class="contact">
         <el-form label-width="60px">
           <el-form-item label="姓名">
-            <el-input v-model="contactName"></el-input>
+            <el-input v-model="form.contactName"></el-input>
           </el-form-item>
 
           <el-form-item label="手机">
-            <el-input placeholder="请输入内容" v-model="contactPhone">
+            <el-input placeholder="请输入内容" v-model="form.contactPhone">
               <template slot="append">
                 <el-button @click="handleSendCaptcha">发送验证码</el-button>
               </template>
@@ -57,7 +57,7 @@
           </el-form-item>
 
           <el-form-item label="验证码">
-            <el-input v-model="captcha"></el-input>
+            <el-input v-model="form.captcha"></el-input>
           </el-form-item>
         </el-form>
         <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
@@ -76,23 +76,27 @@ export default {
   },
   data() {
     return {
-      users: [
-        {
-          username: "",
-          id: ""
-        }
-      ],
-      insurances: [], // 保险数据
-      contactName: "", // 联系人名字
-      contactPhone: "", // 联系人电话
-      captcha: "000000", // 验证码
-      invoice: false // 发票
+      form: {
+        users: [
+          {
+            username: "",
+            id: ""
+          }
+        ],
+        insurances: [], // 保险数据
+        contactName: "", // 联系人名字
+        contactPhone: "", // 联系人电话
+        captcha: "000000", // 验证码
+        invoice: false, // 发票
+        seat_xid: this.$route.query.seat_xid,
+        air: this.$route.query.id
+      }
     };
   },
   methods: {
     // 添加乘机人
     handleAddUsers() {
-      this.users.push({
+      this.form.users.push({
         username: "",
         id: ""
       });
@@ -100,12 +104,12 @@ export default {
 
     // 移除乘机人
     handleDeleteUser(index) {
-      this.users.splice(index, 1);
+      this.form.users.splice(index, 1);
     },
 
     // 发送手机验证码
     handleSendCaptcha() {
-      if (!this.contactPhone) {
+      if (!this.form.contactPhone) {
         this.$confirm("手机号码不能为空", "提示", {
           confirmButtonText: "确定",
           showCancelButton: false,
@@ -114,7 +118,7 @@ export default {
         return;
       }
 
-      if (this.contactPhone.length !== 11) {
+      if (this.form.contactPhone.length !== 11) {
         this.$confirm("手机号码格式错误", "提示", {
           confirmButtonText: "确定",
           showCancelButton: false,
@@ -127,7 +131,7 @@ export default {
         url: `/captchas`,
         method: "POST",
         data: {
-          tel: this.contactPhone
+          tel: this.form.contactPhone
         }
       }).then(res => {
         const { code } = res.data;
@@ -139,18 +143,76 @@ export default {
       });
     },
 
-    // 提交订单
-    handleSubmit() {},
-
     //   保险服务,如果有id的话，点击了就清除id，就是没被选中
     handleInsurance(id) {
-      const index = this.insurances.indexOf(id);
+      const index = this.form.insurances.indexOf(id);
       if (index > -1) {
-        this.insurances.splice(index, 1);
+        this.form.insurances.splice(index, 1);
       } else {
-        this.insurances.push(id);
+        this.form.insurances.push(id);
       }
       //   console.log(this.insurances);
+    },
+
+    // 提交订单
+    handleSubmit() {
+      const rules = {
+        users: {
+          errMessage: "乘机人信息不能为空",
+          validator: () => {
+            let valid = true;
+            this.form.users.forEach(v => {
+              if (!v.username || !v.id) {
+                valid = false;
+              }
+            });
+            return valid;
+          }
+        },
+        contactName: {
+          errMessage: "联系人姓名不能为空",
+          validator: () => {
+            return !!this.form.contactName;
+          }
+        },
+        contactPhone: {
+          errMessage: "联系人电话不能为空",
+          validator: () => {
+            return !!this.form.contactPhone;
+          }
+        },
+        captcha: {
+          errMessage: "验证码不能为空",
+          validator: () => {
+            return !!this.form.captcha;
+          }
+        }
+      };
+
+      let valid = true;
+      Object.keys(rules).forEach(v => {
+        if (!valid) return;
+        const item = rules[v];
+        valid = item.validator();
+        if (!valid) {
+          this.$message.error(item.errMessage);
+        }
+      });
+
+      //   如果验证没通过，中断操作
+      if (!valid) return;
+
+      //   发送提交订单的请求
+      this.$axios({
+        url: "/airorders",
+        method: "POST",
+        data: this.form,
+        headers: {
+          Authorization: `Bearer ` + this.$store.state.user.userInfo.token
+        }
+      }).then(res => {
+        this.$message.success("提交成功");
+      });
     }
   }
 };
