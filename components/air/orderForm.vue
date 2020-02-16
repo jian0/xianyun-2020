@@ -31,7 +31,10 @@
       <h2>保险</h2>
       <div>
         <div class="insurance-item" v-for="(item,index) in data.insurances" :key="index">
-          <el-checkbox :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`" border
+          <el-checkbox
+            :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`"
+            @change="handleInsurance(item.id)"
+            border
           ></el-checkbox>
         </div>
       </div>
@@ -42,11 +45,11 @@
       <div class="contact">
         <el-form label-width="60px">
           <el-form-item label="姓名">
-            <el-input></el-input>
+            <el-input v-model="contactName"></el-input>
           </el-form-item>
 
           <el-form-item label="手机">
-            <el-input placeholder="请输入内容">
+            <el-input placeholder="请输入内容" v-model="contactPhone">
               <template slot="append">
                 <el-button @click="handleSendCaptcha">发送验证码</el-button>
               </template>
@@ -54,7 +57,7 @@
           </el-form-item>
 
           <el-form-item label="验证码">
-            <el-input></el-input>
+            <el-input v-model="captcha"></el-input>
           </el-form-item>
         </el-form>
         <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
@@ -68,7 +71,7 @@ export default {
   props: {
     data: {
       type: Object,
-      default:{}
+      default: {}
     }
   },
   data() {
@@ -78,7 +81,12 @@ export default {
           username: "",
           id: ""
         }
-      ]
+      ],
+      insurances: [], // 保险数据
+      contactName: "", // 联系人名字
+      contactPhone: "", // 联系人电话
+      captcha: "000000", // 验证码
+      invoice: false // 发票
     };
   },
   methods: {
@@ -99,7 +107,18 @@ export default {
     handleSendCaptcha() {},
 
     // 提交订单
-    handleSubmit() {}
+    handleSubmit() {},
+
+    //   保险服务,如果有id的话，点击了就清除id，就是没被选中
+    handleInsurance(id) {
+      const index = this.insurances.indexOf(id);
+      if (index > -1) {
+        this.insurances.splice(index, 1);
+      } else {
+        this.insurances.push(id);
+      }
+    //   console.log(this.insurances); 
+    }
   }
 };
 </script>
