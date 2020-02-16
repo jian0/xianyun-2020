@@ -2,16 +2,17 @@
   <div class="container">
     <el-row type="flex" justify="space-between">
       <!-- 订单表单 -->
-      <OrderForm :data='infoData'></OrderForm>
+      <OrderForm :data="infoData"></OrderForm>
 
       <!-- 侧边栏 -->
-      <div class="aside"></div>
+      <OrderAside :data="$store.state.air.orderDetail"></OrderAside>
     </el-row>
   </div>
 </template>
 
 <script>
 import OrderForm from "@/components/air/orderForm";
+import OrderAside from "@/components/air/orderAside";
 export default {
   data() {
     return {
@@ -21,16 +22,17 @@ export default {
     };
   },
   components: {
-    OrderForm
+    OrderForm,
+    OrderAside
   },
   mounted() {
-      const {query} = this.$route
+    const { query } = this.$route;
     this.$axios({
       url: `/airs/${query.id}`,
       params: query.seat_xid
     }).then(res => {
-        console.log(res);
-        this.infoData = res.data    
+      console.log(res);
+      this.infoData = res.data;
     });
   }
 };
