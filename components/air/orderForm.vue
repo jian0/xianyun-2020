@@ -104,7 +104,40 @@ export default {
     },
 
     // 发送手机验证码
-    handleSendCaptcha() {},
+    handleSendCaptcha() {
+      if (!this.contactPhone) {
+        this.$confirm("手机号码不能为空", "提示", {
+          confirmButtonText: "确定",
+          showCancelButton: false,
+          type: "warning"
+        });
+        return;
+      }
+
+      if (this.contactPhone.length !== 11) {
+        this.$confirm("手机号码格式错误", "提示", {
+          confirmButtonText: "确定",
+          showCancelButton: false,
+          type: "warning"
+        });
+        return;
+      }
+
+      this.$axios({
+        url: `/captchas`,
+        method: "POST",
+        data: {
+          tel: this.contactPhone
+        }
+      }).then(res => {
+        const { code } = res.data;
+        this.$confirm(`模拟手机验证码为：${code}`, "提示", {
+          confirmButtonText: "确定",
+          showCancelButton: false,
+          type: "warning"
+        });
+      });
+    },
 
     // 提交订单
     handleSubmit() {},
@@ -117,7 +150,7 @@ export default {
       } else {
         this.insurances.push(id);
       }
-    //   console.log(this.insurances); 
+      //   console.log(this.insurances);
     }
   }
 };
