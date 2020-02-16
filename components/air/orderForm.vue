@@ -30,7 +30,7 @@
     <div class="air-column">
       <h2>保险</h2>
       <div>
-        <div class="insurance-item" v-for="(item,index) in data.insurances" :key="index">
+        <div class="insurance-item" v-for="(item,index) in infoData.insurances" :key="index">
           <el-checkbox
             :label="`${item.type}：￥${item.price}/份×${form.users.length}  最高赔付${item.compensation}`"
             @change="handleInsurance(item.id)"
@@ -63,17 +63,12 @@
         <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
       </div>
     </div>
+    <span>{{allPrice}}</span>
   </div>
 </template>
 
 <script>
 export default {
-  props: {
-    data: {
-      type: Object,
-      default: {}
-    }
-  },
   data() {
     return {
       form: {
@@ -90,7 +85,9 @@ export default {
         invoice: false, // 发票
         seat_xid: this.$route.query.seat_xid,
         air: this.$route.query.id
-      }
+      },
+      // 当前机票的详细信息
+      infoData: {}
     };
   },
   mounted() {
@@ -106,9 +103,28 @@ export default {
 
       // 把infoData保存到store
       this.$store.commit("air/setOrderDetail", this.infoData);
-      console.log(this.infoData);
-      
+      // console.log(this.infoData);
     });
+  },
+  computed: {
+    allPrice() {
+      if (!this.infoData.seat_infos) return;
+      let price = 0;
+      // 单价
+      price += this.infoData.seat_infos.par_price;
+      // 油价
+      price += this.infoData.airport_tax_audlet;
+      // 保险
+      this.infoData.insurances.forEach(v => {
+        if (this.form.insurances.indexOf(v.id) > -1) {
+          price += v.price;
+        }
+      });
+      // 人数
+      price *= this.form.users.length;
+      this.$store.commit("air/setAllPrice", price);
+      return "";
+    }
   },
   methods: {
     // 添加乘机人
