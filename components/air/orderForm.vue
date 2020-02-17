@@ -107,6 +107,9 @@ export default {
     });
   },
   computed: {
+    // users() {
+    //   this.$store.commit("setUsers", 1);
+    // },
     allPrice() {
       if (!this.infoData.seat_infos) return;
       let price = 0;
@@ -234,7 +237,6 @@ export default {
 
       //   如果验证没通过，中断操作
       if (!valid) return;
-
       //   发送提交订单的请求
       this.$axios({
         url: "/airorders",

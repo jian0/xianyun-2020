@@ -52,7 +52,8 @@ export default {
         data: {
             type: Object,
             default: {
-                seat_infos:{}
+                seat_infos:{},
+                airorders:{}
             }
         }
     },

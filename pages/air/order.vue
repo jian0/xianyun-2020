@@ -32,6 +32,7 @@ export default {
       params: query.seat_xid
     }).then(res => {
       console.log(res);
+    //   console.log(this.$store.state.air.orderDetail);
       this.infoData = res.data;
     });
   }
