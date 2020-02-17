@@ -247,6 +247,16 @@ export default {
         }
       }).then(res => {
         this.$message.success("提交成功");
+
+        // 跳转到支付页面
+        setTimeout(() => {
+          this.$router.push({
+            path: "/air/pay",
+            query: {
+              id: res.data.data.id // 订单id
+            }
+          });
+        }, 1500);
       });
     }
   }

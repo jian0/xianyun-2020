@@ -46,7 +46,7 @@ export default {
               this.$store.dispatch('user/login', this.form).then(res=>{
                 //   console.log(res);//undefined
                 this.$message.success('登录成功')
-                this.$router.push('/')
+                this.$router.replace(this.$route.query.returnUrl || '/')
               })
           }
           
