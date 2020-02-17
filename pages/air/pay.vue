@@ -24,11 +24,13 @@
 </template>
 
 <script>
+import QRCode from "qrcode";
 export default {
-  data () {
+  data() {
     return {
-      payData:{}
-    }
+      payData: {},
+      timer:''
+    };
   },
   mounted() {
     setTimeout(v => {
@@ -45,9 +47,52 @@ export default {
         }
       }).then(res => {
         console.log(res);
-        this.payData = res.data
+        this.payData = res.data;
+
+        // 生成二维码
+        const { code_url } = res.data.payInfo;
+        const canvas = document.getElementById("qrcode-stage");
+        QRCode.toCanvas(canvas, code_url, {
+          width: 200
+        });
+
+        // 查询支付状态
+        this.timer = setInterval(() => {
+          this.isPay();
+        }, 3000);
       });
-    }, 200);
+    }, 0);
+  },
+  // destroyed(){
+  //   clearInterval(this.timer)
+  // },
+  methods: {
+    isPay() {
+      const { id, price, orderNo } = this.payData;
+      this.$axios({
+        url: "/airorders/checkpay",
+        method: "POST",
+        data: {
+          id,
+          nonce_str: price,
+          out_trade_no: orderNo
+        },
+        headers: {
+          Authorization: `Bearer ` + this.$store.state.user.userInfo.token
+        }
+      }).then(res => {
+        console.log(res);
+        if (res.data.statusTxt == "支付完成") {
+          // 清除定时器
+          clearInterval(this.timer);
+          // 提示
+          this.$alert("支付成功，感谢0.01巨款", "提示", {
+            confirmButtonText: "确定",
+            type: "success"
+          });
+        }
+      });
+    }
   }
 };
 </script>
