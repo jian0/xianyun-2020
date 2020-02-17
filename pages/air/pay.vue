@@ -63,9 +63,10 @@ export default {
       });
     }, 0);
   },
-  // destroyed(){
-  //   clearInterval(this.timer)
-  // },
+  // 组件销毁时停止定时器
+  destroyed(){
+    clearInterval(this.timer)
+  },
   methods: {
     isPay() {
       const { id, price, orderNo } = this.payData;
